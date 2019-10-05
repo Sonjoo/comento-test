@@ -1,6 +1,8 @@
 <?php
 namespace App\Services;
 
+use Illuminate\Support\Facades\DB;
+
 use App\Jobs\CreateCoupons;
 
 use App\Coupon;
@@ -10,7 +12,7 @@ use App\Dtos\CouponDTO;
 
 class CouponService {
 
-  public $length;
+  private $length;
 
   public static function loadWithLength($length) {
     $instance = new self();
@@ -35,17 +37,34 @@ class CouponService {
     CreateCoupons::dispatch($couponInfo, $group_id);
   }
 
-  private function setCouponGroup() {
-
+  public function generateCouponCodes(string $prefix, $entity_array) {
+    $length = $this->length - strlen($prefix);
+    $coupons = [];
+    for ($i = 0; $i < 100000; $i++) {
+      $created_code = $prefix.$this->createCouponCode($length);
+      $entity_array['id'] = $created_code;
+      $coupon = Coupon::find($entity_array['id']);
+      while ($coupon !== null) {
+        $entity_array['id'] = $prefix.$this->createCouponCode($length);
+        $coupon = Coupon::find($entity_array['id']);
+      }
+      array_push($coupons, $entity_array);
+      if ($i % 10000 === 0 && $i !== 0) {
+        DB::table('coupons')->insert($coupons);
+        $coupons = [];
+      } else if ($i === 99999) {
+        DB::table('coupons')->insert($coupons);
+      }
+    }
   }
 
-  private function generateCouponCodes(string $prefix, $entity_array) {
-    for ($i = 0; $i < 100000; $i++) {
-       $current_unix = now()->unix();
-       if ($previous_unix === $now) {
-         
-       }
-       $previous_unix = $current_unix;
+  private function createCouponCode($length) {
+    $code = "";
+    $codeAlphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    $max = strlen($codeAlphabet);
+    for ($i = 0; $i < $length; $i++) {
+        $code = $code.$codeAlphabet[random_int(0, $max-1)];
     }
+    return $code;
   }
 }
