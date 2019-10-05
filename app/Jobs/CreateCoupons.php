@@ -13,7 +13,7 @@ use App\Dtos\CouponDTO;
 
 use App\Services\CouponService;
 
-class createCoupons implements ShouldQueue
+class CreateCoupons implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
