@@ -19,17 +19,18 @@ class CreateCoupons implements ShouldQueue
 
     protected $couponBaseInfo;
 
-    protected $group_id
+    protected $group_id;
 
     /**
      * Create a new job instance.
-     *
+     * @param App\Dtos\CouponDTO
+     * @param int
      * @return void
      */
     public function __construct(CouponDTO $couponBaseInfo, int $group_id)
     {
       $this->couponBaseInfo = $couponBaseInfo;
-      $this->$group_id = $group_id;
+      $this->group_id = $group_id;
     }
 
     /**
@@ -39,12 +40,13 @@ class CreateCoupons implements ShouldQueue
      */
     public function handle()
     {
-      $prefix = $this->couponBaseInfo->prefix;
-      $previous_unix = 0;
-      $entity_array = ['id' => '', 'group_id' => $this->group_id];
-      $coupon_service = CouponService::loadWithLength($this->couponBaseIngo->length);
+      //만약의 오류를 위한 transaction
       DB::transaction(function () {
-        $coupon_service->generateCouponCodes($prefix);
+        CouponService::loadWithLength($this->couponBaseInfo->length)
+          ->generateCouponCodes(
+            $this->couponBaseInfo->prefix,
+            ['id' => '', 'coupon_group_id' => $this->group_id]
+          );
       });
     }
 }
