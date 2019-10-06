@@ -11,4 +11,8 @@ class CouponGroup extends Model
     public function coupons() {
       return $this->hasMany('App\Coupon');
     }
+
+    public function couponData() {
+      return $this->hasMany('App\CouponGroup');
+    }
 }
