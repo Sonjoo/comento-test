@@ -13,6 +13,10 @@ class Coupon extends Model
     public $incrementing = false;
 
     public function couponGroup() {
-      $this->belongsTo('App\CouponGroup');
+      return $this->belongsTo('App\CouponGroup');
+    }
+
+    public function user() {
+      return $this->belongsTo('App\User');
     }
 }
