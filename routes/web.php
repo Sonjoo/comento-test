@@ -12,9 +12,19 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('auth.login');
 });
 
-Route::post('/login', 'LoginController@login');
+Route::get('/home', 'HomeController@index')->name('home');
+
+Auth::routes();
 
 Route::get('/coupons', 'CouponController@getCouponList');
+
+Route::get('/use/coupon', 'CouponController@getCouponCheckPage');
+
+Route::put('/use/coupon', 'CouponController@useCoupon');
+
+Route::get('/coupon', 'CouponController@getCheckResultPage')->name('check_result');
+
+Route::get('/check/coupon', 'CouponController@checkCoupon');
