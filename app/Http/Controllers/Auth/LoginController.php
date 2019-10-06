@@ -26,13 +26,6 @@ class LoginController extends Controller
     use AuthenticatesUsers;
 
     /**
-     * Where to redirect users after login.
-     *
-     * @var string
-     */
-    protected $redirectTo = '/home';
-
-    /**
      * Create a new controller instance.
      *
      * @return void
@@ -43,8 +36,8 @@ class LoginController extends Controller
     }
 
     protected function redirectTo() {
-      $user_id = Auth::id();
-      if (User::find($user_id)->code === 'admin') {
+      $user = Auth::user();
+      if ($user->code === 'admin') {
         return '/coupons';
       } else {
         return '/use/coupon';
