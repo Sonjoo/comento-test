@@ -11,6 +11,12 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // $this->call(UsersTableSeeder::class);
+      $users = factory(App\User::class, 4)->create();
+      $groups = factory(App\CouponGroup::class, 100)->create();
+      $users->each(function ($user) use ($groups) {
+        $groups->each(function ($group) use ($user) {
+          $group->coupons()->saveMany(factory(App\Coupon::class, 1000)->make(['user_id' => $user->id]));
+        });
+      });
     }
 }
