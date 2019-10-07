@@ -45,7 +45,7 @@ class CreateCoupons implements ShouldQueue
         CouponService::loadWithLength($this->couponBaseInfo->length)
           ->generateCouponCodes(
             $this->couponBaseInfo->prefix,
-            ['id' => '', 'coupon_group_id' => $this->group_id]
+            ['id' => '', 'coupon_group_id' => $this->group_id, 'created_at' => now()]
           );
       });
     }
