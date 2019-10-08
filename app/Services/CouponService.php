@@ -44,7 +44,7 @@ class CouponService {
       //또는 state등의 칼럼추가를 통해 현재 보여질 값을 결정할 수 있으나 시간의 한계로 멈춤.
       $data = CouponData::where('group_id')->first();
       if ($data !== null) {
-        CouponData::where('group_id')->first()->delete();
+        $data->delete();
       }
 
       CouponData::create([
